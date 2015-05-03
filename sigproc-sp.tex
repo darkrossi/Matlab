@@ -31,58 +31,14 @@
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{caption}
+\usepackage[]{mcode}
 
 \begin{document}
 
 \title{Rapport Matlab : Simulation d'une chaîne de transmission numérique sur canal gaussien à bande limitée}
 
-%\subtitle{[Extended Abstract]
-%\titlenote{A full version of this paper is available as
-%\textit{Author's Guide to Preparing ACM SIG Proceedings Using
-%\LaTeX$2_\epsilon$\ and BibTeX} at
-%\texttt{www.acm.org/eaddress.htm}}}
-
-%
-% You need the command \numberofauthors to handle the 'placement
-% and alignment' of the authors beneath the title.
-%
-% For aesthetic reasons, we recommend 'three authors at a time'
-% i.e. three 'name/affiliation blocks' be placed beneath the title.
-%
-% NOTE: You are NOT restricted in how many 'rows' of
-% "name/affiliations" may appear. We just ask that you restrict
-% the number of 'columns' to three.
-%
-% Because of the available 'opening page real-estate'
-% we ask you to refrain from putting more than six authors
-% (two rows with three columns) beneath the article title.
-% More than six makes the first-page appear very cluttered indeed.
-%
-% Use the \alignauthor commands to handle the names
-% and affiliations for an 'aesthetic maximum' of six authors.
-% Add names, affiliations, addresses for
-% the seventh etc. author(s) as the argument for the
-% \additionalauthors command.
-% These 'additional authors' will be output/set for you
-% without further effort on your part as the last section in
-% the body of your article BEFORE References or any Appendices.
-
-\numberofauthors{2} %  in this sample file, there are a *total*
-% of EIGHT authors. SIX appear on the 'first-page' (for formatting
-% reasons) and the remaining two appear in the \additionalauthors section.
-%
+\numberofauthors{2} 
 \author{
-% You can go ahead and credit any number of authors here,
-% e.g. one 'row of three' or two rows (consisting of one row of three
-% and a second row of one, two or three).
-%
-% The command \alignauthor (no curly braces needed) should
-% precede each author name, affiliation/snail-mail address and
-% e-mail address. Additionally, tag each line of
-% affiliation/address with \affaddr, and tag the
-% e-mail address with \email.
-%
-% 1st. author
 \alignauthor
 Hoël Boëdec\\
        \affaddr{ENSIMAG - ISSC}\\
@@ -97,22 +53,13 @@ Fournier Mickaël\\
        \affaddr{Grenoble, France}\\
        \email{mickael.fournier@phelma.grenoble-inp.fr}
 }
-% There's nothing stopping you putting the seventh, eighth, etc.
-% author on the opening page (as the 'third row') but we ask,
-% for aesthetic reasons that you place these 'additional authors'
-% in the \additional authors block, viz.
-% \additionalauthors{Additional authors: John Smith (The Th{\o}rv{\"a}ld Group,
-% email: {\texttt{jsmith@affiliation.org}}) and Julius P.~Kumquat
-% (The Kumquat Consortium, email: {\texttt{jpkumquat@consortium.net}}).}
-% \date{30 July 1999}
-% Just remember to make sure that the TOTAL number of authors
-% is the number that will appear on the first page PLUS the
-% number that will appear in the \additionalauthors section.
 
 \maketitle
 \begin{abstract}
     
 \end{abstract}
+
+\keywords{covert channel, steganography, data hidding} % NOT required for Proceedings
 
 \section{Introduction}
 
@@ -122,14 +69,131 @@ Fournier Mickaël\\
 
 
 \section{Génération aléatoire des éléments binaires}
+\begin{lstlisting}
+N = 2048;
+
+bn = zeros(1, N);
+for k=1:1:length(bn)
+    bn(k) = round(rand());
+end
+
+mean(bn);
+var(bn);
+\end{lstlisting}
+
+La moyenne et la variance empirique de bn valent respectivement 0,5 et 0,25. Ceci est cohérent avec la théorie car 0 et 1 sont équiprobables.
 
 
 \section{Conversion des éléments binaires en symboles (mapping)}
+\begin{lstlisting}
+an = zeros(1, N);
+for k=1:1:length(bn)
+    an(k) = 2*bn(k)-1;
+end
+
+mean(an); # 0.0
+var(an); # 1
+
+mean(an.^2); #1
+\end{lstlisting}
+
+La moyenne et la variance empirique de an valent respectivement 0 et 1. Ceci est cohérent avec la théorie car les symboles sont centrés et ???.
+La puissance moyenne temporelle empirique du vecteur an vaut 1 (unité ??).
+
+\begin{lstlisting}
+D = 10000000; # 1 Mbit/sec
+T = 1/D;
+
+t_a = 0 : T : N*T - T;
+
+plot(t_a, an, '*')
+\end{lstlisting}
+
+\begin{center}
+\includegraphics[scale=0.45]{ak_2.png}
+\end{center}
+
+\begin{lstlisting}
+plot(real(an), imag(an), '*')
+\end{lstlisting}
+
+\begin{center}
+\includegraphics[scale=0.45]{constell_2.png}
+\end{center}
 
 
 \section{Conversion numérique - analogique}
 \subsection{Expansion}
+
+\begin{lstlisting}
+F = 16; # Facteur de surechantillonage
+st = zeros(1, N*F);
+st(1) = F*an(1);
+for k=1:1:length(an)-1
+    st(k*F+1) = F*an(k+1);
+end
+\end{lstlisting}
+
+Question 1 : la durée du signal st vaut NF/D.
+
+\begin{center}
+\includegraphics[scale=0.45]{st_3.png}
+\end{center}
+
 \subsection{Etude des filtres}
+
+\begin{lstlisting}
+L = 8;
+alpha = 0.5;
+Te = T/F;
+t_filtre = [0 : T/F : L*T -T/F];
+\end{lstlisting}
+
+\subsubsection{NRZ}
+
+\begin{lstlisting}
+s_t = gen_filters2('nrz',t_filtre,T,F,L,alpha);
+plot(t_filtre, s_t, '*')
+\end{lstlisting}
+
+\begin{center}
+\includegraphics[scale=0.45]{NRZ_3.png}
+\end{center}
+
+\begin{center}
+\includegraphics[scale=0.45]{NRZ_rep_3.png}
+\end{center}
+
+\subsubsection{RZ}
+
+\begin{lstlisting}
+s_t = gen_filters2('rz',t_filtre,T,F,L,alpha);
+plot(t_filtre, s_t, '*')
+\end{lstlisting}
+
+\begin{center}
+\includegraphics[scale=0.45]{RZ_3.png}
+\end{center}
+
+\begin{center}
+\includegraphics[scale=0.45]{RZ_rep_3.png}
+\end{center}
+
+\subsubsection{SRRC}
+
+\begin{lstlisting}
+s_t = gen_filters2('srrc',t_filtre,T,F,L,alpha);
+plot(t_filtre, s_t, '*')
+\end{lstlisting}
+
+\begin{center}
+\includegraphics[scale=0.45]{SRRC_3.png}
+\end{center}
+
+\begin{center}
+\includegraphics[scale=0.45]{SRRC_rep_3.png}
+\end{center}
+
 \subsection{Mise en forme des symboles}
 
 
@@ -157,6 +221,10 @@ Fournier Mickaël\\
 
 
 \section{Conclusion}
+
+\bibliographystyle{abbrv}
+\bibliography{sigproc}  % sigproc.bib is the name of the Bibliography in this case
+\nocite{*}
 
 \balancecolumns
 % That's all folks!

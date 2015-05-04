@@ -367,29 +367,34 @@ On vérifie grâce à la fonction length que le vecteur yk obtenu est bien de la
 
 \section{Prise de décision (demapping)}
 
-On choisit comme sueil le double de sigmaN (rapport avec le bruit)
+On choisit comme seuil sigmaN (rapport avec le bruit)
 
 \begin{lstlisting}
-bn = [];
+bnF = [];
 
 for k=1:1:length(yk)
     val = yk(k)/16;
     if val > 1 - 2*sigma_n
-        bn = [bn 1];
+        bnF = [bnF 1];
     else
-        bn = [bn -1];
+        bnF = [bnF 0];
     end
 end
 
-figure; plot(t_a, an, '*'); hold on; plot(t_a, bn, 'ro');
+figure; plot(t_a, bn, '*'); hold on; plot(t_a, bnF, 'ro');
 \end{lstlisting}
 
 \begin{center}
-\includegraphics[scale=0.45]{an_bn_14.png}
+\includegraphics[scale=0.45]{bn_bnF_14.png}
 \end{center}
 
 \section{Calcul du taux d'erreur binaire}
 
+\begin{lstlisting}
+sum(xor(bn, bnF))/N
+\end{lstlisting}
+
+On trouve 0.027958 (avec N = 262144)
 
 \section{Mesures de performances}
 

@@ -29,9 +29,11 @@
 \documentclass{acm_proc_article-sp}
 
 \usepackage[utf8]{inputenc}
+\usepackage[francais]{babel}
 \usepackage{graphicx}
 \usepackage{caption}
-\usepackage[]{mcode}
+%\usepackage[]{mcode}
+\usepackage{listings}
 
 \begin{document}
 
@@ -42,7 +44,7 @@
 \alignauthor
 Hoël Boëdec\\
        \affaddr{ENSIMAG - ISSC}\\
-       \affaddr{3 rue Amiral Courbet}\\
+       \affaddr{3 rue Emile Zola}\\
        \affaddr{Grenoble, France}\\
        \email{hoel.boedec@phelma.grenoble-inp.fr}
 % 2nd. author
@@ -60,6 +62,7 @@ Fournier Mickaël\\
 
 \section{Génération aléatoire des éléments binaires}
 \begin{lstlisting}
+
 N = 2048;
 
 bn = zeros(1, N);
@@ -75,6 +78,7 @@ La moyenne et la variance empirique de bn valent respectivement 0,5 et 0,25. Cec
 
 \section{Conversion des éléments binaires en symboles (mapping)}
 \begin{lstlisting}
+
 an = zeros(1, N);
 for k=1:1:length(bn)
     an(k) = 2*bn(k)-1;
@@ -86,12 +90,16 @@ var(an);
 mean(an.^2);
 \end{lstlisting}
 
-La moyenne et la variance empirique de an valent respectivement 0 et 1. Ceci est cohérent avec la théorie car les symboles sont centrés, équiprobables et indépendants.
-La puissance moyenne temporelle empirique du vecteur an vaut 1 (unité ??).
+\begin{itemize}
+\item La moyenne vaut 0 car les symboles sont centrés (-1 et 1 sont équiprobables) et indépendants
+\item La variance vaut 1 car var = (1/2)*[(-1-0)\up{2} + (+1-0)\up{2}] = 1
+\item La puissance moyenne temporelle empirique du vecteur an vaut 1 V\up{2}.
+\end{itemize}
 
 \begin{center}
 \begin{lstlisting}
 N = 32;
+
 
 D = 10000000; # 1 Mbit/sec
 T = 1/D;
@@ -112,6 +120,7 @@ plot(real(an), imag(an), '*')
 \captionof{figure}{Constellation des symboles de an}
 \end{center}
 
+On retrouve bien une constellation correspondant à une modulation 2-PAM.
 
 \section{Conversion numérique - analogique}
 \subsection{Expansion - Question 1}
@@ -120,6 +129,7 @@ La durée du signal st peut s'écrire : NF/D.
 
 \begin{center}
 \begin{lstlisting}
+
 N = 32;
 
 F = 16;
@@ -134,9 +144,12 @@ end
 \captionof{figure}{Signal st en fonction du temps}
 \end{center}
 
+Conservation de la puissance moyenne temporelle à montrer !
+
 \subsection{Etude des filtres - Question 2}
 
 \begin{lstlisting}
+
 N = 32;
 
 L = 8;
@@ -156,9 +169,15 @@ plot(t_filtre, s_t, '*')
 \includegraphics[scale=0.45]{NRZ_3.png}
 \captionof{figure}{Réponse impulsionnelle du filtre NRZ}
 
+
+Ce filtre permet de mettre en oeuvre le code en ligne NRZ.
+
+\begin{center}
 \includegraphics[scale=0.45]{NRZ_rep_3.png}
-\captionof{figure}{Module de la transformée de Fourier de la réponse impulsionnelle du filtre NRZ}
+\captionof{figure}{Module et phase de la transformée de Fourier de la réponse impulsionnelle du filtre NRZ}
 \end{center}
+
+le tableau 1 de l'énoncé nous donne l'expression de la Réponse Impulsionnelle discrète. F étant une constante il est normal d'observer une évolution linéaire de la phase de Hef avec la fréquence.
 
 \subsubsection{RZ}
 
@@ -171,8 +190,12 @@ plot(t_filtre, s_t, '*')
 \includegraphics[scale=0.45]{RZ_3.png}
 \captionof{figure}{Réponse impulsionnelle du filtre RZ}
 
+
+Ce filtre permet de mettre en oeuvre le code en ligne RZ.
+
+\begin{center}
 \includegraphics[scale=0.45]{RZ_rep_3.png}
-\captionof{figure}{Module de la transformée de Fourier de la réponse impulsionnelle du filtre RZ}
+\captionof{figure}{Module et phase de la transformée de Fourier de la réponse impulsionnelle du filtre RZ}
 \end{center}
 
 \subsubsection{SRRC}
@@ -186,8 +209,13 @@ plot(t_filtre, s_t, '*')
 \includegraphics[scale=0.45]{SRRC_3.png}
 \captionof{figure}{Réponse impulsionnelle du filtre SRRC}
 
+
+Ce filtre permet la transmission à bande limitée en respectant le critère de Nyquist.
+
+\begin{center}
 \includegraphics[scale=0.45]{SRRC_rep_3.png}
-\captionof{figure}{Module de la transformée de Fourier de la réponse impulsionnelle du filtre SRRC}
+\captionof{figure}{Module et phase de la transformée de Fourier de la réponse impulsionnelle du filtre SRRC}
+\end{center}
 
 \includegraphics[scale=0.45]{SRRC_varD_3.png}
 \captionof{figure}{Variation de la réponse impulsionnelle du filtre SRRC avec le débit}
@@ -200,13 +228,12 @@ Interêt de D :
 
 Interêt de alpha :
 
-Est-ce logique d'observer une variation de phase linéaire avec la fréquence ?
-
 \subsection{Mise en forme des symboles}
 
 \subsubsection{Question 3}
 \begin{center}
 \begin{lstlisting}
+
 N = 32;
 
 t_x = -L*F*T/2 : T : (N*F)*T + L*F*T/2;
@@ -221,16 +248,25 @@ subplot(2,1,2); plot(t_x, xt);
 
 \begin{lstlisting}
 length(st)
-length(ht)
-length(t_x)*T
-length(t_filtre)*T
+length(xt)
+length(st)*T
+length(xt)*T
 \end{lstlisting}
 \end{center}
+
 
 Résultats : ans =  512 (16*32)
 ans =  130 (LF)
 ans =    6.4100e-05 (cf ts)
 ans =    1.3000e-05 (cf tfiltre)
+
+Sélectionner les bons résultats !
+
+Résultats : ans =  512\\
+ans =  641\\
+ans =    5.1200e-05 s\\
+ans =    6.4100e-05 s\\
+
 
 \subsubsection{Question 4}
 \begin{lstlisting}
@@ -242,16 +278,33 @@ mean(xt.^2)
 La puissance moyenne empirique du signal émis xt vaut 1. Ceci est cohérent avec la théorie car la variance vaut 1 et le norme carrée du filtre d'émission vaut 1/T (filtre normalisé).
 
 \subsubsection{Question 5}
+\begin{lstlisting}
+
+spectrum2(st,T/F,'log')
+\end{lstlisting}
+
+\begin{center}
+\includegraphics[scale=0.45]{EstimationDSPst.png}
+\captionof{figure}{Estimation de la densité spectrale de puissance de st}
+\end{center}
+
+\begin{lstlisting}
+spectrum2(xt,T/F,'log')
+\end{lstlisting}
+
+\begin{center}
+\includegraphics[scale=0.45]{EstimationDSPxt.png}
+\captionof{figure}{Estimation de la densité spectrale de puissance de xt}
+\end{center}
 
 \subsubsection{Question 6}
 
 
 \section{Ajout du bruit blanc gaussien - Question 7}
 
+
 On sait que $sigman^{2}$ = $\frac{NoF}{2T}$
 or P(xt) = $\frac{Eb}{T}$ d'où la formule $\frac{Eb}{N0}$ = $\frac{F}{2}$*($\frac{P(xt)}{sigman^{2}}$).
-
-
 
 De plus, on a P(xt) = 1 ici, donc sigman² = f($\frac{Eb}{N0}$) avec f(x) = $\frac{F}{2x}$.
 
@@ -272,12 +325,20 @@ rt = xt + nt;
 \section{Conversion analogique - numérique}
 \subsection{Filtrage adapté}
 \subsubsection{Question 8}
-Définition de filtre adapté : filtre de réception optimum permettant une rapport signal à bruit en sortie du FA bien échantilloné maximum et une probabilité d'erreur minimum.\\
+
+Définition de filtre adapté : filtre de réception optimum permettant un rapport signal à bruit en sortie du FA bien échantilloné maximum et une probabilité d'erreur minimum.\\
+
+Choisir la bonne définition !
+
+Un filtre de réception est dit "adapté" si il minimise la probabilité d'erreur Pe pour un Eb/N0 donné.
+Ce filtre est de module identique au filtre he(t), mais en opposition de phase (ou correction de phase).
+
 
 \subsubsection{Question 9}
 
 \begin{center}
 \begin{lstlisting}
+
 N = 32;
 
 htr = fliplr(ht+L*T);
@@ -289,7 +350,12 @@ plot(t_filtre, htr, 'r+');
 \captionof{figure}{Réponse impulsionnelle des filtres ht et htr}
 \end{center}
 
+
 Comme le filtre ht a une symétrie paire, le filtre adapaté associé sera le filtre ht (en considérant le décalage en temps). C'est ce qui se vérifie sur la figure ci-dessus.
+
+Choisir la bonne justif !
+
+La réponse impulsionnelle du filtre he(t) est symétrique. Lorsque on utilise fliplr on retrouve donc un signal qui se superpose à la R.I. de he(t).
 
 \begin{center}
 \begin{lstlisting}
@@ -309,7 +375,8 @@ On sait que le vecteur temps t\_filtre\_pt vaut le double du vecteur t\_filtre p
 
 \subsubsection{Question 10}
 
-A l'aide de Matlab on fait créer un vecteur contenant les valeurs de pt prises en to + nTs avec to = L*T et Ts = T.
+
+A l'aide de Matlab on créer un vecteur contenant les valeurs de pt prises en to + nTs avec to = L*T et Ts = T.
 
 \begin{center}
 \begin{lstlisting}
@@ -327,7 +394,7 @@ plot(t_vect_result, vect_result, '*')
 \end{lstlisting}
 
 \includegraphics[scale=0.45]{pt_nyquist_10.png}
-\captionof{figure}{Valeur de pt en LT+nTs avec n entier}
+\captionof{figure}{Valeurs de pt en LT+nTs avec n entier}
 \end{center}
 
 On voir que pour n <> 0 les valeurs de pt sont bien nulles. On ne peut pas transmettre sans IES car on ne peut atteindre une précision telle que pt aura une valeur nulle tous les to + nTs. On peut s'en approcher, et donc minimiser l'IES, en essayant de se rapprocher au maximum de 0.

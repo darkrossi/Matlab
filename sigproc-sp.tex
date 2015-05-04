@@ -334,6 +334,8 @@ On voir que pour n <> 0 les valeurs de pt sont bien nulles. On ne peut pas trans
 
 \begin{center}
 \begin{lstlisting}
+N = 2048;
+
 t_y = -L*F*T : T : (N*F)*T + L*F*T + T;
 yt = conv(rt, htr);
 plot(t_y, yt, '*')

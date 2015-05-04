@@ -266,11 +266,127 @@ rt = xt + nt;
 
 \section{Conversion analogique - numérique}
 \subsection{Filtrage adapté}
+\subsubsection{Question 8}
+Définition de filtre adapté : 
+Justification utilisation filtre adapté dans chaîne de communication :
+
+\subsubsection{Question 9}
+
+\begin{lstlisting}
+htr = fliplr(ht+L*T);
+plot(t_filtre, ht, '*');
+plot(t_filtre, htr, 'r+');
+\end{lstlisting}
+
+\begin{center}
+\includegraphics[scale=0.45]{ht_htr_9.png}
+\end{center}
+
+Justifier la forme de la réponse impulsionnelle du filtre adapté ht(r) :
+
+\begin{lstlisting}
+t_filtre_pt = [0 : T/F : 2*(L*T + T/F)];
+figure; plot(t_filtre, ht, '*'); hold on; plot(t_filtre_pt, pt, 'r+');
+\end{lstlisting}
+
+\begin{center}
+\includegraphics[scale=0.45]{ht_pt_9.png}
+\end{center}
+
+Expliquer la démarche pour la construction de pt et pour le vecteur temps choisi
+
+\subsubsection{Question 10}
+
+A l'aide de Matlab on fait crée un vecteurs contenant les valeurs de pt en to + nTs avec to = L*T et Ts = T.
+
+\begin{lstlisting}
+vect_result = zeros(1,17);
+
+for k=1:1:8
+  vect_result(9-k) = pt(round((L*T-k*T)/(T/F)));
+  vect_result(9+k) = pt(round((L*T+k*T)/(T/F)));
+end
+
+vect_result(9) = pt(round((L*T)/(T/F)));
+
+t_vect_result = [L*T - 8*T: T : L*T + 8*T];
+plot(t_vect_result, vect_result, '*')
+\end{lstlisting}
+
+\begin{center}
+\includegraphics[scale=0.45]{pt_nyquist_10.png}
+\end{center}
+
+On voir que pour n <> 0 les valeurs de pt sont bien nulles. On ne peut pas transmettre sans IES car on ne peut atteindre une précision telle que pt aura une valeur nulle tous les to + nTs. Cependant, on peut s'en approcher, et donc minimiser l'IES, en ???.
+
+Diagramme de l'oeil : j'ai un truc mais .. ça m'a pas l'air d'être ça du tout
+
+\subsubsection{Question 11}
+
+blablablablabla
+
 \subsection{Décimation}
+
+\subsubsection{Question 12}
+
+cf cours
+
+\subsubsection{Question 13}
+
+
+\begin{lstlisting}
+t_y = -L*F*T : T : (N*F)*T + L*F*T + T;
+yt = conv(rt, htr);
+
+plot(t_x, xt); hold on; plot(t_y, yt, 'r');
+\end{lstlisting}
+
+\begin{center}
+\includegraphics[scale=0.45]{yt_13.png}
+\end{center}
+
+\begin{lstlisting}
+yk = [];
+
+for k=1:1:length(yt)-1
+    if mod(k, F) == 0 && -L*F*T + k*T >= 0 && -L*F*T + k*T < (N*F)*T
+        yk = [yk F*yt(k)];
+    end
+end
+
+t_yk = [0 : F*T : (N*F-1)*T];
+figure; plot(t_s, st, '*'); hold on; plot(t_yk, yk, 'r+')
+\end{lstlisting}
+
+\begin{center}
+\includegraphics[scale=0.45]{yk_13.png}
+\end{center}
+
+On vérifie grâce à la fonction length que le vecteur yk obtenu est bien de la même taille que an, ie 32.
 
 
 \section{Prise de décision (demapping)}
 
+On choisit comme sueil le double de sigmaN (rapport avec le bruit)
+
+\begin{lstlisting}
+bn = [];
+
+for k=1:1:length(yk)
+    val = yk(k)/16;
+    if val > 1 - 2*sigma_n
+        bn = [bn 1];
+    else
+        bn = [bn -1];
+    end
+end
+
+figure; plot(t_a, an, '*'); hold on; plot(t_a, bn, 'ro');
+\end{lstlisting}
+
+\begin{center}
+\includegraphics[scale=0.45]{an_bn_14.png}
+\end{center}
 
 \section{Calcul du taux d'erreur binaire}
 

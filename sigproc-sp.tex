@@ -55,11 +55,6 @@ Fournier Mickaël\\
 }
 
 \maketitle
-\begin{abstract}
-    
-\end{abstract}
-
-\keywords{covert channel, steganography, data hidding} % NOT required for Proceedings
 
 \section{Introduction}
 
@@ -75,7 +70,7 @@ end
 mean(bn);
 var(bn);
 \end{lstlisting}
-La moyenne et la variance empirique de bn valent respectivement 0,5 et 0,25. Ceci est cohérent avec la théorie car 0 et 1 sont équiprobables.
+La moyenne et la variance empirique de bn valent respectivement 0,5 et 0,25. Ceci est cohérent avec la théorie car 0 et 1 sont équiprobables et indépendants.
 
 
 \section{Conversion des éléments binaires en symboles (mapping)}
@@ -85,16 +80,19 @@ for k=1:1:length(bn)
     an(k) = 2*bn(k)-1;
 end
 
-mean(an); # 0.0
-var(an); # 1
+mean(an);
+var(an);
 
-mean(an.^2); #1
+mean(an.^2);
 \end{lstlisting}
 
-La moyenne et la variance empirique de an valent respectivement 0 et 1. Ceci est cohérent avec la théorie car les symboles sont centrés et ???.
+La moyenne et la variance empirique de an valent respectivement 0 et 1. Ceci est cohérent avec la théorie car les symboles sont centrés, équiprobables et indépendants.
 La puissance moyenne temporelle empirique du vecteur an vaut 1 (unité ??).
 
+\begin{center}
 \begin{lstlisting}
+N = 32;
+
 D = 10000000; # 1 Mbit/sec
 T = 1/D;
 
@@ -103,16 +101,13 @@ t_a = 0 : T : N*T - T;
 plot(t_a, an, '*')
 \end{lstlisting}
 
-\begin{center}
 \includegraphics[scale=0.45]{ak_2.png}
 \captionof{figure}{Représentation temporelle d'une réalisation de an}
-\end{center}
 
 \begin{lstlisting}
 plot(real(an), imag(an), '*')
 \end{lstlisting}
 
-\begin{center}
 \includegraphics[scale=0.45]{constell_2.png}
 \captionof{figure}{Constellation des symboles de an}
 \end{center}
@@ -121,7 +116,12 @@ plot(real(an), imag(an), '*')
 \section{Conversion numérique - analogique}
 \subsection{Expansion - Question 1}
 
+La durée du signal st peut s'écrire : NF/D.
+
+\begin{center}
 \begin{lstlisting}
+N = 32;
+
 F = 16;
 st = zeros(1, N*F);
 st(1) = F*an(1);
@@ -130,9 +130,6 @@ for k=1:1:length(an)-1
 end
 \end{lstlisting}
 
-Question 1 : la durée du signal st vaut NF/D.
-
-\begin{center}
 \includegraphics[scale=0.45]{st_3.png}
 \captionof{figure}{Signal st en fonction du temps}
 \end{center}
@@ -140,6 +137,8 @@ Question 1 : la durée du signal st vaut NF/D.
 \subsection{Etude des filtres - Question 2}
 
 \begin{lstlisting}
+N = 32;
+
 L = 8;
 alpha = 0.5;
 Te = T/F;
@@ -148,63 +147,53 @@ t_filtre = [0 : T/F : L*T -T/F];
 
 \subsubsection{NRZ}
 
+\begin{center}
 \begin{lstlisting}
 s_t = gen_filters2('nrz',t_filtre,T,F,L,alpha);
 plot(t_filtre, s_t, '*')
 \end{lstlisting}
 
-\begin{center}
 \includegraphics[scale=0.45]{NRZ_3.png}
 \captionof{figure}{Réponse impulsionnelle du filtre NRZ}
-\end{center}
 
-\begin{center}
 \includegraphics[scale=0.45]{NRZ_rep_3.png}
 \captionof{figure}{Module de la transformée de Fourier de la réponse impulsionnelle du filtre NRZ}
 \end{center}
 
 \subsubsection{RZ}
 
+\begin{center}
 \begin{lstlisting}
 s_t = gen_filters2('rz',t_filtre,T,F,L,alpha);
 plot(t_filtre, s_t, '*')
 \end{lstlisting}
 
-\begin{center}
 \includegraphics[scale=0.45]{RZ_3.png}
 \captionof{figure}{Réponse impulsionnelle du filtre RZ}
-\end{center}
 
-\begin{center}
 \includegraphics[scale=0.45]{RZ_rep_3.png}
 \captionof{figure}{Module de la transformée de Fourier de la réponse impulsionnelle du filtre RZ}
 \end{center}
 
 \subsubsection{SRRC}
 
+\begin{center}
 \begin{lstlisting}
 s_t = gen_filters2('srrc',t_filtre,T,F,L,alpha);
 plot(t_filtre, s_t, '*')
 \end{lstlisting}
 
-\begin{center}
 \includegraphics[scale=0.45]{SRRC_3.png}
 \captionof{figure}{Réponse impulsionnelle du filtre SRRC}
-\end{center}
 
-\begin{center}
 \includegraphics[scale=0.45]{SRRC_rep_3.png}
 \captionof{figure}{Module de la transformée de Fourier de la réponse impulsionnelle du filtre SRRC}
-\end{center}
 
-\begin{center}
 \includegraphics[scale=0.45]{SRRC_varD_3.png}
 \captionof{figure}{Variation de la réponse impulsionnelle du filtre SRRC avec le débit}
-\end{center}
 
 Interêt de D : 
 
-\begin{center}
 \includegraphics[scale=0.45]{SRRC_varAlpha_3.png}
 \captionof{figure}{Variation de la réponse impulsionnelle du filtre SRRC avec alpha}
 \end{center}
@@ -216,7 +205,10 @@ Est-ce logique d'observer une variation de phase linéaire avec la fréquence ?
 \subsection{Mise en forme des symboles}
 
 \subsubsection{Question 3}
+\begin{center}
 \begin{lstlisting}
+N = 32;
+
 t_x = -L*F*T/2 : T : (N*F)*T + L*F*T/2;
 ht = gen_filters2('srrc',t_filtre,T,F,L,0.5);
 xt = conv(st, ht);
@@ -224,10 +216,8 @@ figure; subplot(2,1,1); plot(t_s, st, '*');
 subplot(2,1,2); plot(t_x, xt);
 \end{lstlisting}
 
-\begin{center}
 \includegraphics[scale=0.45]{conv_3_3.png}
 \captionof{figure}{Signal st et son filtrage par ht en fonction du temps}
-\end{center}
 
 \begin{lstlisting}
 length(st)
@@ -235,18 +225,21 @@ length(ht)
 length(t_x)*T
 length(t_filtre)*T
 \end{lstlisting}
+\end{center}
 
-Résultats : ans =  512
-ans =  130
-ans =    6.4100e-05
-ans =    1.3000e-05
+Résultats : ans =  512 (16*32)
+ans =  130 (LF)
+ans =    6.4100e-05 (cf ts)
+ans =    1.3000e-05 (cf tfiltre)
 
 \subsubsection{Question 4}
 \begin{lstlisting}
+N = 2048;
+
 mean(xt.^2)
 \end{lstlisting}
 
-Résultat : 1 -> cohérent avec la théorie car la variance vaut 1 et le norme carrée du filtre d'émission vaut 1/T (filtre normalisé)
+La puissance moyenne empirique du signal émis xt vaut 1. Ceci est cohérent avec la théorie car la variance vaut 1 et le norme carrée du filtre d'émission vaut 1/T (filtre normalisé).
 
 \subsubsection{Question 5}
 
@@ -255,18 +248,22 @@ Résultat : 1 -> cohérent avec la théorie car la variance vaut 1 et le norme c
 
 \section{Ajout du bruit blanc gaussien - Question 7}
 
-On sait que sigman² = (No*F)/(2*T)
-or P(xt) = Eb/T d'où la formule
+On sait que $sigman^{2}$ = $\frac{NoF}{2T}$
+or P(xt) = $\frac{Eb}{T}$ d'où la formule $\frac{Eb}{N0}$ = $\frac{F}{2}$*($\frac{P(xt)}{sigman^{2}}$).
 
-De plus, on a P(xt) = 1 ici donc sigman² = f(Eb/N0) avec f(x) = F/(2*x)
 
+
+De plus, on a P(xt) = 1 ici, donc sigman² = f($\frac{Eb}{N0}$) avec f(x) = $\frac{F}{2x}$.
+
+\begin{center}
 \begin{lstlisting}
-sigma_n = sqrt((F/2)/(10.^(EbNodB/10)));
+EbN0 = 100;
+
+sigma_n = sqrt((F/2)/EbN0);
 nt=sigma_n*randn(1,length(xt));
 rt = xt + nt;
 \end{lstlisting}
 
-\begin{center}
 \includegraphics[scale=0.45]{signalBruite_7.png}
 \captionof{figure}{Filtrage de st par le filtre ht et le même signal bruité}
 \end{center}
@@ -275,41 +272,47 @@ rt = xt + nt;
 \section{Conversion analogique - numérique}
 \subsection{Filtrage adapté}
 \subsubsection{Question 8}
-Définition de filtre adapté : 
+Définition de filtre adapté : \\
 Justification utilisation filtre adapté dans chaîne de communication :
 
 \subsubsection{Question 9}
 
+\begin{center}
 \begin{lstlisting}
+N = 32;
+
 htr = fliplr(ht+L*T);
 plot(t_filtre, ht, '*');
 plot(t_filtre, htr, 'r+');
 \end{lstlisting}
 
-\begin{center}
 \includegraphics[scale=0.45]{ht_htr_9.png}
 \captionof{figure}{Réponse impulsionnelle des filtres ht et htr}
 \end{center}
 
 Justifier la forme de la réponse impulsionnelle du filtre adapté ht(r) :
 
+\begin{center}
 \begin{lstlisting}
+pt = conv(ht, htr);
+
 t_filtre_pt = [0 : T/F : 2*(L*T + T/F)];
 figure; plot(t_filtre, ht, '*'); hold on;
 plot(t_filtre_pt, pt, 'r+');
 \end{lstlisting}
 
-\begin{center}
 \includegraphics[scale=0.45]{ht_pt_9.png}
 \captionof{figure}{Réponse impulsionnelle du filtre ht et du filtre adapté}
 \end{center}
 
-Expliquer la démarche pour la construction de pt et pour le vecteur temps choisi
+Pt est construit comme le retourné décalé de ht. Ici on a choisi LT comme décalage afin que le filtre équivalent émission-réception soit causal.\\
+On sait que le vecteur temps t\_filtre\_pt vaut le double du vecteur t\_filtre par convolution.
 
 \subsubsection{Question 10}
 
 A l'aide de Matlab on fait crée un vecteurs contenant les valeurs de pt en to + nTs avec to = L*T et Ts = T.
 
+\begin{center}
 \begin{lstlisting}
 vect_result = zeros(1,17);
 
@@ -324,7 +327,6 @@ t_vect_result = [L*T - 8*T: T : L*T + 8*T];
 plot(t_vect_result, vect_result, '*')
 \end{lstlisting}
 
-\begin{center}
 \includegraphics[scale=0.45]{pt_nyquist_10.png}
 \captionof{figure}{Valeur de pt en LT+nTs avec n entier}
 \end{center}
@@ -345,7 +347,7 @@ cf cours
 
 \subsubsection{Question 13}
 
-
+\begin{center}
 \begin{lstlisting}
 t_y = -L*F*T : T : (N*F)*T + L*F*T + T;
 yt = conv(rt, htr);
@@ -353,10 +355,8 @@ yt = conv(rt, htr);
 plot(t_x, xt); hold on; plot(t_y, yt, 'r');
 \end{lstlisting}
 
-\begin{center}
 \includegraphics[scale=0.45]{yt_13.png}
 \captionof{figure}{Signauc xt et yt}
-\end{center}
 
 \begin{lstlisting}
 yk = [];
@@ -374,18 +374,18 @@ figure; plot(t_s, st, '*'); hold on;
 plot(t_yk, yk, 'r+')
 \end{lstlisting}
 
-\begin{center}
 \includegraphics[scale=0.45]{yk_13.png}
 \captionof{figure}{Signaux st et yk}
 \end{center}
 
-On vérifie grâce à la fonction length que le vecteur yk obtenu est bien de la même taille que an, ie 32.
+On vérifie grâce à la fonction length que le vecteur yk obtenu est bien de la même taille que an, soit 32.
 
 
 \section{Prise de décision (demapping)}
 
 On choisit comme seuil sigmaN (rapport avec le bruit)
 
+\begin{center}
 \begin{lstlisting}
 bnF = [];
 
@@ -402,7 +402,6 @@ figure; plot(t_a, bn, '*'); hold on;
 plot(t_a, bnF, 'ro');
 \end{lstlisting}
 
-\begin{center}
 \includegraphics[scale=0.45]{bn_bnF_14.png}
 \captionof{figure}{Signaux bn et la suite bnF résultante du filtrage}
 \end{center}
@@ -417,6 +416,8 @@ On trouve 0.027958 (avec N = 262144)
 
 \section{Mesures de performances}
 
+
+\begin{center}
 \begin{lstlisting}
 val_ebno = [50:200:20000];
 
@@ -430,7 +431,6 @@ end
 plot(val_ebno, vect_val_pratique);
 \end{lstlisting}
 
-\begin{center}
 \includegraphics[scale=0.45]{performance_prat_8.png}
 \captionof{figure}{Courbe de performances pratiques}
 \end{center}

@@ -272,8 +272,7 @@ rt = xt + nt;
 \section{Conversion analogique - numérique}
 \subsection{Filtrage adapté}
 \subsubsection{Question 8}
-Définition de filtre adapté : \\
-Justification utilisation filtre adapté dans chaîne de communication :
+Définition de filtre adapté : filtre de réception optimum permettant une rapport signal à bruit en sortie du FA bien échantilloné maximum et une probabilité d'erreur minimum.\\
 
 \subsubsection{Question 9}
 
@@ -290,7 +289,7 @@ plot(t_filtre, htr, 'r+');
 \captionof{figure}{Réponse impulsionnelle des filtres ht et htr}
 \end{center}
 
-Justifier la forme de la réponse impulsionnelle du filtre adapté ht(r) :
+Comme le filtre ht a une symétrie paire, le filtre adapaté associé sera le filtre ht (en considérant le décalage en temps). C'est ce qui se vérifie sur la figure ci-dessus.
 
 \begin{center}
 \begin{lstlisting}

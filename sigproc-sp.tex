@@ -123,7 +123,7 @@ plot(real(an), imag(an), '*')
 
 
 \section{Conversion numérique - analogique}
-\subsection{Expansion}
+\subsection{Expansion - Question 1}
 
 \begin{lstlisting}
 F = 16; # Facteur de surechantillonage
@@ -140,7 +140,7 @@ Question 1 : la durée du signal st vaut NF/D.
 \includegraphics[scale=0.45]{st_3.png}
 \end{center}
 
-\subsection{Etude des filtres}
+\subsection{Etude des filtres - Question 2}
 
 \begin{lstlisting}
 L = 8;
@@ -194,7 +194,55 @@ plot(t_filtre, s_t, '*')
 \includegraphics[scale=0.45]{SRRC_rep_3.png}
 \end{center}
 
+\begin{center}
+\includegraphics[scale=0.45]{SRRC_varD_3.png}
+\end{center}
+
+Interêt de D : 
+
+\begin{center}
+\includegraphics[scale=0.45]{SRRC_varAlpha_3.png}
+\end{center}
+
+Interêt de alpha :
+
+Est-ce logique d'observer une variation de phase linéaire avec la fréquence ?
+
 \subsection{Mise en forme des symboles}
+
+\subsubsection{Question 3}
+\begin{lstlisting}
+t_x = -L*F*T/2 : T : (N*F)*T + L*F*T/2;
+ht = gen_filters2('srrc',t_filtre,T,F,L,0.5);
+xt = conv(st, ht);
+figure; subplot(2,1,1); plot(t_s, st, '*'); subplot(2,1,2); plot(t_x, xt);
+\end{lstlisting}
+
+\begin{center}
+\includegraphics[scale=0.45]{conv_3_3.png}
+\end{center}
+
+\begin{lstlisting}
+length(st)
+length(ht)
+length(t_x)*T
+length(t_filtre)*T
+\end{lstlisting}
+
+Résultats : ans =  512
+ans =  130
+ans =    6.4100e-05
+ans =    1.3000e-05
+
+\subsubsection{Question 4}
+\begin{lstlisting}
+mean(xt.^2)
+\end{lstlisting}
+
+Résultat : 1 -> cohérent avec la théorie car la variance vaut 1 et le norme carrée du filtre d'émission vaut 1/T (filtre normalisé)
+
+\subsubsection{Question 5}
+
 
 
 \section{Ajout du bruit blanc gaussien}

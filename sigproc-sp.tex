@@ -243,9 +243,25 @@ Résultat : 1 -> cohérent avec la théorie car la variance vaut 1 et le norme c
 
 \subsubsection{Question 5}
 
+\subsubsection{Question 6}
 
 
-\section{Ajout du bruit blanc gaussien}
+\section{Ajout du bruit blanc gaussien - Question 7}
+
+On sait que sigman² = (No*F)/(2*T)
+or P(xt) = Eb/T d'où la formule
+
+De plus, on a P(xt) = 1 ici donc sigman² = f(Eb/N0) avec f(x) = F/(2*x)
+
+\begin{lstlisting}
+sigma_n = sqrt((F/2)/(10.^(EbNodB/10)));
+nt=sigma_n*randn(1,length(xt));
+rt = xt + nt;
+\end{lstlisting}
+
+\begin{center}
+\includegraphics[scale=0.45]{signalBruite_7.png}
+\end{center}
 
 
 \section{Conversion analogique - numérique}

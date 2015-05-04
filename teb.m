@@ -1,6 +1,6 @@
-function result = teb(EbNo)
+function result = teb(N, EbNo)
 
-N = 10000; # N = 32 pour visualisations temporelles
+%N = 10000; # N = 32 pour visualisations temporelles
 D = 10000000;
 T = 1/D;
 EbNodB = 20;
@@ -82,4 +82,4 @@ for k=1:1:length(yk)
     end
 end
 
-result = sum(xor(bn, bnF))/N
+result = sum(xor(bn, bnF))/N;

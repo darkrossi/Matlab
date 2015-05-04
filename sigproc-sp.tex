@@ -63,11 +63,6 @@ Fournier Mickaël\\
 
 \section{Introduction}
 
-\begin{center}
-\includegraphics[height=3cm]{DirtyConstellation.eps}
-\end{center}
-
-
 \section{Génération aléatoire des éléments binaires}
 \begin{lstlisting}
 N = 2048;
@@ -80,7 +75,6 @@ end
 mean(bn);
 var(bn);
 \end{lstlisting}
-
 La moyenne et la variance empirique de bn valent respectivement 0,5 et 0,25. Ceci est cohérent avec la théorie car 0 et 1 sont équiprobables.
 
 
@@ -111,6 +105,7 @@ plot(t_a, an, '*')
 
 \begin{center}
 \includegraphics[scale=0.45]{ak_2.png}
+\captionof{figure}{Représentation temporelle d'une réalisation de an}
 \end{center}
 
 \begin{lstlisting}
@@ -119,6 +114,7 @@ plot(real(an), imag(an), '*')
 
 \begin{center}
 \includegraphics[scale=0.45]{constell_2.png}
+\captionof{figure}{Constellation des symboles de an}
 \end{center}
 
 
@@ -126,7 +122,7 @@ plot(real(an), imag(an), '*')
 \subsection{Expansion - Question 1}
 
 \begin{lstlisting}
-F = 16; # Facteur de surechantillonage
+F = 16;
 st = zeros(1, N*F);
 st(1) = F*an(1);
 for k=1:1:length(an)-1
@@ -138,6 +134,7 @@ Question 1 : la durée du signal st vaut NF/D.
 
 \begin{center}
 \includegraphics[scale=0.45]{st_3.png}
+\captionof{figure}{Signal st en fonction du temps}
 \end{center}
 
 \subsection{Etude des filtres - Question 2}
@@ -158,10 +155,12 @@ plot(t_filtre, s_t, '*')
 
 \begin{center}
 \includegraphics[scale=0.45]{NRZ_3.png}
+\captionof{figure}{Réponse impulsionnelle du filtre NRZ}
 \end{center}
 
 \begin{center}
 \includegraphics[scale=0.45]{NRZ_rep_3.png}
+\captionof{figure}{Module de la transformée de Fourier de la réponse impulsionnelle du filtre NRZ}
 \end{center}
 
 \subsubsection{RZ}
@@ -173,10 +172,12 @@ plot(t_filtre, s_t, '*')
 
 \begin{center}
 \includegraphics[scale=0.45]{RZ_3.png}
+\captionof{figure}{Réponse impulsionnelle du filtre RZ}
 \end{center}
 
 \begin{center}
 \includegraphics[scale=0.45]{RZ_rep_3.png}
+\captionof{figure}{Module de la transformée de Fourier de la réponse impulsionnelle du filtre RZ}
 \end{center}
 
 \subsubsection{SRRC}
@@ -188,20 +189,24 @@ plot(t_filtre, s_t, '*')
 
 \begin{center}
 \includegraphics[scale=0.45]{SRRC_3.png}
+\captionof{figure}{Réponse impulsionnelle du filtre SRRC}
 \end{center}
 
 \begin{center}
 \includegraphics[scale=0.45]{SRRC_rep_3.png}
+\captionof{figure}{Module de la transformée de Fourier de la réponse impulsionnelle du filtre SRRC}
 \end{center}
 
 \begin{center}
 \includegraphics[scale=0.45]{SRRC_varD_3.png}
+\captionof{figure}{Variation de la réponse impulsionnelle du filtre SRRC avec le débit}
 \end{center}
 
 Interêt de D : 
 
 \begin{center}
 \includegraphics[scale=0.45]{SRRC_varAlpha_3.png}
+\captionof{figure}{Variation de la réponse impulsionnelle du filtre SRRC avec alpha}
 \end{center}
 
 Interêt de alpha :
@@ -215,11 +220,13 @@ Est-ce logique d'observer une variation de phase linéaire avec la fréquence ?
 t_x = -L*F*T/2 : T : (N*F)*T + L*F*T/2;
 ht = gen_filters2('srrc',t_filtre,T,F,L,0.5);
 xt = conv(st, ht);
-figure; subplot(2,1,1); plot(t_s, st, '*'); subplot(2,1,2); plot(t_x, xt);
+figure; subplot(2,1,1); plot(t_s, st, '*');
+subplot(2,1,2); plot(t_x, xt);
 \end{lstlisting}
 
 \begin{center}
 \includegraphics[scale=0.45]{conv_3_3.png}
+\captionof{figure}{Signal st et son filtrage par ht en fonction du temps}
 \end{center}
 
 \begin{lstlisting}
@@ -261,6 +268,7 @@ rt = xt + nt;
 
 \begin{center}
 \includegraphics[scale=0.45]{signalBruite_7.png}
+\captionof{figure}{Filtrage de st par le filtre ht et le même signal bruité}
 \end{center}
 
 
@@ -280,17 +288,20 @@ plot(t_filtre, htr, 'r+');
 
 \begin{center}
 \includegraphics[scale=0.45]{ht_htr_9.png}
+\captionof{figure}{Réponse impulsionnelle des filtres ht et htr}
 \end{center}
 
 Justifier la forme de la réponse impulsionnelle du filtre adapté ht(r) :
 
 \begin{lstlisting}
 t_filtre_pt = [0 : T/F : 2*(L*T + T/F)];
-figure; plot(t_filtre, ht, '*'); hold on; plot(t_filtre_pt, pt, 'r+');
+figure; plot(t_filtre, ht, '*'); hold on;
+plot(t_filtre_pt, pt, 'r+');
 \end{lstlisting}
 
 \begin{center}
 \includegraphics[scale=0.45]{ht_pt_9.png}
+\captionof{figure}{Réponse impulsionnelle du filtre ht et du filtre adapté}
 \end{center}
 
 Expliquer la démarche pour la construction de pt et pour le vecteur temps choisi
@@ -315,6 +326,7 @@ plot(t_vect_result, vect_result, '*')
 
 \begin{center}
 \includegraphics[scale=0.45]{pt_nyquist_10.png}
+\captionof{figure}{Valeur de pt en LT+nTs avec n entier}
 \end{center}
 
 On voir que pour n <> 0 les valeurs de pt sont bien nulles. On ne peut pas transmettre sans IES car on ne peut atteindre une précision telle que pt aura une valeur nulle tous les to + nTs. Cependant, on peut s'en approcher, et donc minimiser l'IES, en ???.
@@ -343,23 +355,28 @@ plot(t_x, xt); hold on; plot(t_y, yt, 'r');
 
 \begin{center}
 \includegraphics[scale=0.45]{yt_13.png}
+\captionof{figure}{Signauc xt et yt}
 \end{center}
 
 \begin{lstlisting}
 yk = [];
 
 for k=1:1:length(yt)-1
-    if mod(k, F) == 0 && -L*F*T + k*T >= 0 && -L*F*T + k*T < (N*F)*T
+    if mod(k, F) == 0 
+      && -L*F*T + k*T >= 0 
+        && -L*F*T + k*T < (N*F)*T
         yk = [yk F*yt(k)];
     end
 end
 
 t_yk = [0 : F*T : (N*F-1)*T];
-figure; plot(t_s, st, '*'); hold on; plot(t_yk, yk, 'r+')
+figure; plot(t_s, st, '*'); hold on;
+plot(t_yk, yk, 'r+')
 \end{lstlisting}
 
 \begin{center}
 \includegraphics[scale=0.45]{yk_13.png}
+\captionof{figure}{Signaux st et yk}
 \end{center}
 
 On vérifie grâce à la fonction length que le vecteur yk obtenu est bien de la même taille que an, ie 32.
@@ -381,11 +398,13 @@ for k=1:1:length(yk)
     end
 end
 
-figure; plot(t_a, bn, '*'); hold on; plot(t_a, bnF, 'ro');
+figure; plot(t_a, bn, '*'); hold on;
+plot(t_a, bnF, 'ro');
 \end{lstlisting}
 
 \begin{center}
 \includegraphics[scale=0.45]{bn_bnF_14.png}
+\captionof{figure}{Signaux bn et la suite bnF résultante du filtrage}
 \end{center}
 
 \section{Calcul du taux d'erreur binaire}
@@ -398,6 +417,23 @@ On trouve 0.027958 (avec N = 262144)
 
 \section{Mesures de performances}
 
+\begin{lstlisting}
+val_ebno = [50:200:20000];
+
+vect_val_pratique = [];
+
+for k=1:1:length(val_ebno)
+    vect_val_pratique = 
+      [vect_val_pratique teb(2048, val_ebno(k))];
+end
+
+plot(val_ebno, vect_val_pratique);
+\end{lstlisting}
+
+\begin{center}
+\includegraphics[scale=0.45]{performance_prat_8.png}
+\captionof{figure}{Courbe de performances pratiques}
+\end{center}
 
 \section{Optionnel}
 \subsection{Autres impulsions de mise en forme}

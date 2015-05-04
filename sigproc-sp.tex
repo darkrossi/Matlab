@@ -309,7 +309,7 @@ On sait que le vecteur temps t\_filtre\_pt vaut le double du vecteur t\_filtre p
 
 \subsubsection{Question 10}
 
-A l'aide de Matlab on fait crée un vecteurs contenant les valeurs de pt en to + nTs avec to = L*T et Ts = T.
+A l'aide de Matlab on fait créer un vecteur contenant les valeurs de pt prises en to + nTs avec to = L*T et Ts = T.
 
 \begin{center}
 \begin{lstlisting}
@@ -330,10 +330,19 @@ plot(t_vect_result, vect_result, '*')
 \captionof{figure}{Valeur de pt en LT+nTs avec n entier}
 \end{center}
 
-On voir que pour n <> 0 les valeurs de pt sont bien nulles. On ne peut pas transmettre sans IES car on ne peut atteindre une précision telle que pt aura une valeur nulle tous les to + nTs. Cependant, on peut s'en approcher, et donc minimiser l'IES, en ???.
+On voir que pour n <> 0 les valeurs de pt sont bien nulles. On ne peut pas transmettre sans IES car on ne peut atteindre une précision telle que pt aura une valeur nulle tous les to + nTs. On peut s'en approcher, et donc minimiser l'IES, en essayant de se rapprocher au maximum de 0.
 
-Diagramme de l'oeil : j'ai un truc mais .. ça m'a pas l'air d'être ça du tout
+\begin{center}
+\begin{lstlisting}
+t_y = -L*F*T : T : (N*F)*T + L*F*T + T;
+yt = conv(rt, htr);
+plot(t_y, yt, '*')
+eyepattern(yt,T,F,32,1,1)
+\end{lstlisting}
 
+\includegraphics[scale=0.45]{oeil.png}
+\captionof{figure}{Diagramme de l'oeil du signal yt}
+\end{center}
 \subsubsection{Question 11}
 
 blablablablabla
